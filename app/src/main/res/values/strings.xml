@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="title_pop">Pop Movies</string>
+    <string name="title_rate">Top Rate Movies</string>
+    <string name="title_detail">Movie Detail</string>
+
+    <string name="offline">No network available.</string>
+    <string name="load_error">Error occurred when trying to load.</string>
+    <string name="rating_suffix">/10</string>
+</resources>

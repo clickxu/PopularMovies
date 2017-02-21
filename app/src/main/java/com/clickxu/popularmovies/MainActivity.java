@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import butterknife.ButterKnife;
 import static com.clickxu.popularmovies.ApiConsts.IMAGE_URL;
 import static com.clickxu.popularmovies.domain.ContentType.POP_MOViES;
 import static com.clickxu.popularmovies.domain.ContentType.TOP_RATED_MOViES;
+import static com.clickxu.popularmovies.utils.DisplayUtils.calculateNoOfColumns;
 import static com.clickxu.popularmovies.utils.TypeUtils.getContentType;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         });
 
 
-        mLayoutManager = new GridLayoutManager(this, 2);
+        mLayoutManager = new GridLayoutManager(this, calculateNoOfColumns(this, 180));
         mContentsView.setLayoutManager(mLayoutManager);
         mContentsAdapter = new MoviesAdapter(movies);
         mContentsView.setAdapter(mContentsAdapter);

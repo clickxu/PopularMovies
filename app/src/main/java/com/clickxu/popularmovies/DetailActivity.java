@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.clickxu.popularmovies.datasource.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.clickxu.popularmovies.ApiConsts.IMAGE_URL;
 
 /**
@@ -24,14 +27,13 @@ public class DetailActivity extends AppCompatActivity {
 
     private static final String MOVIE_DETAIL = "DetailActivity.MovieDetail";
 
-    Toolbar mToolbar;
-
-    TextView mTitle;
-    ImageView mThumbnail;
-    TextView mReleaseYear;
-    TextView mVideoLength;
-    TextView mRating;
-    TextView mDescription;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.title) TextView mTitle;
+    @BindView(R.id.thumbnail) ImageView mThumbnail;
+    @BindView(R.id.releaseYear) TextView mReleaseYear;
+    @BindView(R.id.videoLength) TextView mVideoLength;
+    @BindView(R.id.rating) TextView mRating;
+    @BindView(R.id.description) TextView mDescription;
 
     Movie mMovie;
 
@@ -49,7 +51,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -57,13 +60,6 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(R.string.title_detail);
         }
-        mTitle = (TextView) findViewById(R.id.title);
-        mReleaseYear = (TextView) findViewById(R.id.releaseYear);
-        mVideoLength = (TextView) findViewById(R.id.videoLength);
-        mRating = (TextView) findViewById(R.id.rating);
-        mDescription = (TextView) findViewById(R.id.description);
-        mThumbnail = (ImageView) findViewById(R.id.thumbnail);
-
         mMovie = getIntent().getParcelableExtra(MOVIE_DETAIL);
         mTitle.setText(mMovie.getTitle());
         mReleaseYear.setText(mMovie.getReleaseDate());

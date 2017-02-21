@@ -25,6 +25,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.clickxu.popularmovies.ApiConsts.IMAGE_URL;
 import static com.clickxu.popularmovies.domain.ContentType.POP_MOViES;
 import static com.clickxu.popularmovies.domain.ContentType.TOP_RATED_MOViES;
@@ -39,15 +42,18 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public static final String MOVIES = "MainActivity.Movies";
 
     MainContract.Presenter mPresenter;
-    SwipeRefreshLayout mSwipeRefreshLayout;
     GridLayoutManager mLayoutManager;
     MoviesAdapter mContentsAdapter;
-    RecyclerView mContentsView;
+
+    @BindView(R.id.movie_contents) RecyclerView mContentsView;
+    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
         ArrayList<Movie> movies = null;
         int contentType = POP_MOViES;
         int page = 0;
@@ -84,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             }
         });
 
-        mContentsView = (RecyclerView) findViewById(R.id.movie_contents);
+
         mLayoutManager = new GridLayoutManager(this, 2);
         mContentsView.setLayoutManager(mLayoutManager);
         mContentsAdapter = new MoviesAdapter(movies);
@@ -113,8 +119,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 }
             }
         });
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

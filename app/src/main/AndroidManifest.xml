@@ -12,10 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-            <meta-data
-                android:name="com.clickxu.popularmovies.API_KEY"
-                android:value="ADD KEY HERE (see README.md for details)" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

@@ -1,6 +1,6 @@
 # Android Developer Nanodegree: Popular Movies App
 
 
- Copy the API key generated, and paste it in `AndroidManifest.xml`.
+ Copy the API key generated, and add `API_KEY={your api key}` in `gradle.properties`.
 
 

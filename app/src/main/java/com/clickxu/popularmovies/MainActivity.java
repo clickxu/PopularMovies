@@ -32,7 +32,7 @@ import static com.clickxu.popularmovies.utils.TypeUtils.getContentType;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
-    public static final String API_KEY = "com.clickxu.popularmovies.API_KEY";
+    public static final String API_KEY = BuildConfig.API_KEY;
     public static final String CONTENT_TYPE = "MainActivity.ContentType";
     public static final String PAGE = "MainActivity.Page";
     public static final String TOTAL_PAGE = "MainActivity.TotalPage";
@@ -48,16 +48,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        String apiKey = null;
-        try {
-            ActivityInfo activityInfo = getPackageManager().getActivityInfo(
-                    MainActivity.this.getComponentName(), PackageManager.GET_META_DATA);
-            apiKey = activityInfo.metaData.getString(API_KEY);
-        } catch (PackageManager.NameNotFoundException e) {
-            //Ignore
-        }
-
         ArrayList<Movie> movies = null;
         int contentType = POP_MOViES;
         int page = 0;
@@ -69,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             page = savedInstanceState.getInt(PAGE, 1);
             totalPage = savedInstanceState.getInt(TOTAL_PAGE, Integer.MAX_VALUE);
         }
-        mPresenter = new MainPresenter(this, apiKey, contentType, page, totalPage);
+        mPresenter = new MainPresenter(this, API_KEY, contentType, page, totalPage);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

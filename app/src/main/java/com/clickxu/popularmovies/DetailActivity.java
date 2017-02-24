@@ -67,7 +67,8 @@ public class DetailActivity extends AppCompatActivity {
         mDescription.setText(mMovie.getOverview());
         Picasso.with(this)
                 .load(IMAGE_URL + mMovie.getPosterPath())
-                .noPlaceholder()
+                .placeholder(R.drawable.loading)
+                .error(R.drawable.error)
                 .into(mThumbnail);
     }
 

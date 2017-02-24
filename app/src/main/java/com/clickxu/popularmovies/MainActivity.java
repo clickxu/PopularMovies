@@ -202,7 +202,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             String posterPath = movie.getPosterPath();
             Picasso.with(mContext)
                     .load(IMAGE_URL + posterPath)
-                    .noPlaceholder()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
                     .into(holder.posterImage);
             holder.posterImage.setOnClickListener(new View.OnClickListener() {
                 @Override

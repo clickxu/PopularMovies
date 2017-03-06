@@ -1,8 +1,6 @@
-package com.clickxu.popularmovies;
+package com.clickxu.popularmovies.top;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -11,16 +9,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.clickxu.popularmovies.datasource.Movie;
+import com.clickxu.popularmovies.Injection;
+import com.clickxu.popularmovies.R;
+import com.clickxu.popularmovies.data.Movie;
+import com.clickxu.popularmovies.detail.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -29,15 +28,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.clickxu.popularmovies.ApiConsts.IMAGE_URL;
-import static com.clickxu.popularmovies.domain.ContentType.POP_MOViES;
-import static com.clickxu.popularmovies.domain.ContentType.TOP_RATED_MOViES;
+import static com.clickxu.popularmovies.BuildConfig.IMAGE_URL;
+import static com.clickxu.popularmovies.top.ContentType.POP_MOViES;
+import static com.clickxu.popularmovies.top.ContentType.TOP_RATED_MOViES;
 import static com.clickxu.popularmovies.utils.DisplayUtils.calculateNoOfColumns;
 import static com.clickxu.popularmovies.utils.TypeUtils.getContentType;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
-    public static final String API_KEY = BuildConfig.API_KEY;
     public static final String CONTENT_TYPE = "MainActivity.ContentType";
     public static final String PAGE = "MainActivity.Page";
     public static final String TOTAL_PAGE = "MainActivity.TotalPage";
@@ -67,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             page = savedInstanceState.getInt(PAGE, 1);
             totalPage = savedInstanceState.getInt(TOTAL_PAGE, Integer.MAX_VALUE);
         }
-        mPresenter = new MainPresenter(this, API_KEY, contentType, page, totalPage);
+        mPresenter = new MainPresenter(this, Injection.provideMovieRepository(),
+                contentType, page, totalPage);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,21 +76,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setTitle(R.string.title_pop);
         }
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.pop:
-                        mPresenter.onContentTypeSelected(POP_MOViES);
-                        return true;
-                    case R.id.top_rated:
-                        mPresenter.onContentTypeSelected(TOP_RATED_MOViES);
-                        return true;
-                }
-                return false;
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.pop:
+                    mPresenter.onContentTypeSelected(POP_MOViES);
+                    return true;
+                case R.id.top_rated:
+                    mPresenter.onContentTypeSelected(TOP_RATED_MOViES);
+                    return true;
             }
+            return false;
         });
-
 
         mLayoutManager = new GridLayoutManager(this, calculateNoOfColumns(this, 180));
         mContentsView.setLayoutManager(mLayoutManager);
@@ -121,19 +116,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 }
             }
         });
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mPresenter.refresh();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.refresh());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         if (mContentsAdapter.getItemCount() == 0) {
-            mPresenter.loadNext();
+            mPresenter.subscribe();
         }
     }
 
@@ -205,12 +195,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.error)
                     .into(holder.posterImage);
-            holder.posterImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DetailActivity.launch(mContext, movie);
-                }
-            });
+            holder.posterImage.setOnClickListener(v -> DetailActivity.launch(mContext, movie));
         }
 
         ArrayList<Movie> getMovies() {

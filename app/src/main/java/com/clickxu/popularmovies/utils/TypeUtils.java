@@ -1,9 +1,9 @@
 package com.clickxu.popularmovies.utils;
 
-import com.clickxu.popularmovies.domain.ContentType;
+import com.clickxu.popularmovies.top.ContentType;
 
-import static com.clickxu.popularmovies.domain.ContentType.POP_MOViES;
-import static com.clickxu.popularmovies.domain.ContentType.TOP_RATED_MOViES;
+import static com.clickxu.popularmovies.top.ContentType.POP_MOViES;
+import static com.clickxu.popularmovies.top.ContentType.TOP_RATED_MOViES;
 
 /**
  * Created by t-xu on 2/14/17.

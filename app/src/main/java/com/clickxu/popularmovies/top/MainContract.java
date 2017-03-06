@@ -1,7 +1,7 @@
-package com.clickxu.popularmovies;
+package com.clickxu.popularmovies.top;
 
-import com.clickxu.popularmovies.datasource.Movie;
-import com.clickxu.popularmovies.domain.ContentType;
+import com.clickxu.popularmovies.BasePresenter;
+import com.clickxu.popularmovies.data.Movie;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface MainContract {
         void showLoadError(Throwable t);
     }
 
-    interface Presenter {
+    interface Presenter extends BasePresenter {
         void loadNext();
         boolean isLoading();
         void refresh();

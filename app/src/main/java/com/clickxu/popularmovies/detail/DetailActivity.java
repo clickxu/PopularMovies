@@ -1,4 +1,4 @@
-package com.clickxu.popularmovies;
+package com.clickxu.popularmovies.detail;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,19 +11,24 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.clickxu.popularmovies.datasource.Movie;
+import com.clickxu.popularmovies.R;
+import com.clickxu.popularmovies.data.Movie;
+import com.clickxu.popularmovies.data.Review;
+import com.clickxu.popularmovies.data.Video;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.clickxu.popularmovies.ApiConsts.IMAGE_URL;
+import static com.clickxu.popularmovies.BuildConfig.IMAGE_URL;
 
 /**
  * Created by t-xu on 2/2/17.
  */
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements DetailContract.View {
 
     private static final String MOVIE_DETAIL = "DetailActivity.MovieDetail";
 
@@ -78,5 +83,16 @@ public class DetailActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+
+    @Override
+    public void showTrailers(List<Video> trailers) {
+        //TODO
+    }
+
+    @Override
+    public void showReviews(List<Review> reviews) {
+        //TODO
     }
 }

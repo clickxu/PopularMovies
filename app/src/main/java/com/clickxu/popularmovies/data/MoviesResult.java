@@ -1,5 +1,5 @@
 
-package com.clickxu.popularmovies.datasource;
+package com.clickxu.popularmovies.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,7 +16,7 @@ public class MoviesResult implements Parcelable {
     private int page;
     @SerializedName("results")
     @Expose
-    private List<Movie> results = null;
+    private List<Movie> movies = null;
     @SerializedName("total_results")
     @Expose
     private int totalResults;
@@ -32,7 +32,7 @@ public class MoviesResult implements Parcelable {
         public MoviesResult createFromParcel(Parcel in) {
             MoviesResult instance = new MoviesResult();
             instance.page = ((int) in.readValue((int.class.getClassLoader())));
-            in.readList(instance.results, (com.clickxu.popularmovies.datasource.Movie.class.getClassLoader()));
+            in.readList(instance.movies, (Movie.class.getClassLoader()));
             instance.totalResults = ((int) in.readValue((int.class.getClassLoader())));
             instance.totalPages = ((int) in.readValue((int.class.getClassLoader())));
             return instance;
@@ -53,12 +53,12 @@ public class MoviesResult implements Parcelable {
         this.page = page;
     }
 
-    public List<Movie> getResults() {
-        return results;
+    public List<Movie> getMovies() {
+        return movies;
     }
 
-    public void setResults(List<Movie> results) {
-        this.results = results;
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
     public int getTotalResults() {
@@ -79,7 +79,7 @@ public class MoviesResult implements Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(page);
-        dest.writeList(results);
+        dest.writeList(movies);
         dest.writeValue(totalResults);
         dest.writeValue(totalPages);
     }

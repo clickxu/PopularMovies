@@ -9,7 +9,7 @@ import java.util.List;
  * Created by t-xu on 2/14/17.
  */
 
-public interface MainContract {
+public interface TopContract {
 
     interface View {
         void showContents(List<Movie> movies);

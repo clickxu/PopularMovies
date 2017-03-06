@@ -14,9 +14,9 @@ import static com.clickxu.popularmovies.top.ContentType.TOP_RATED_MOViES;
 /**
  * Created by t-xu on 2/14/17.
  */
-class MainPresenter implements MainContract.Presenter {
+class TopPresenter implements TopContract.Presenter {
 
-    private MainContract.View mView;
+    private TopContract.View mView;
     private MovieRepository mMovieRepository;
     @ContentType
     private int mContentType;
@@ -26,8 +26,8 @@ class MainPresenter implements MainContract.Presenter {
     private CompositeSubscription mSubscriptions;
     private boolean mLoading;
 
-    MainPresenter(MainContract.View view, MovieRepository movieRepository,
-                  @ContentType int contentType, int page, int totalPages) {
+    TopPresenter(TopContract.View view, MovieRepository movieRepository,
+                 @ContentType int contentType, int page, int totalPages) {
         mView = view;
         mMovieRepository = movieRepository;
         mContentType = contentType;

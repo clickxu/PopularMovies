@@ -34,14 +34,14 @@ import static com.clickxu.popularmovies.top.ContentType.TOP_RATED_MOViES;
 import static com.clickxu.popularmovies.utils.DisplayUtils.calculateNoOfColumns;
 import static com.clickxu.popularmovies.utils.TypeUtils.getContentType;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View {
+public class TopActivity extends AppCompatActivity implements TopContract.View {
 
     public static final String CONTENT_TYPE = "MainActivity.ContentType";
     public static final String PAGE = "MainActivity.Page";
     public static final String TOTAL_PAGE = "MainActivity.TotalPage";
     public static final String MOVIES = "MainActivity.Movies";
 
-    MainContract.Presenter mPresenter;
+    TopContract.Presenter mPresenter;
     GridLayoutManager mLayoutManager;
     MoviesAdapter mContentsAdapter;
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             page = savedInstanceState.getInt(PAGE, 1);
             totalPage = savedInstanceState.getInt(TOTAL_PAGE, Integer.MAX_VALUE);
         }
-        mPresenter = new MainPresenter(this, Injection.provideMovieRepository(),
+        mPresenter = new TopPresenter(this, Injection.provideMovieRepository(),
                 contentType, page, totalPage);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -2,12 +2,12 @@ package com.clickxu.popularmovies.data;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
 
 import static com.clickxu.popularmovies.BuildConfig.MOVIE_URL;
 
@@ -26,7 +26,7 @@ public class MovieRepository implements MovieDataSource {
             .client(sOkHttpClient)
             .baseUrl(MOVIE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build();
 
     private MovieDataSource mMovieDataSource;
@@ -46,22 +46,22 @@ public class MovieRepository implements MovieDataSource {
 
 
     @Override
-    public Observable<MoviesResult> getPopularMovies(int page) {
+    public Single<MoviesResult> getPopularMovies(int page) {
         return mMovieDataSource.getPopularMovies(page);
     }
 
     @Override
-    public Observable<MoviesResult> getTopRatedMovies(int page) {
+    public Single<MoviesResult> getTopRatedMovies(int page) {
         return mMovieDataSource.getTopRatedMovies(page);
     }
 
     @Override
-    public Observable<VideosResult> getVideos(String movieId) {
+    public Single<VideosResult> getVideos(int movieId) {
         return mMovieDataSource.getVideos(movieId);
     }
 
     @Override
-    public Observable<ReviewsResult> getReviews(String movieId) {
+    public Single<ReviewsResult> getReviews(int movieId) {
         return mMovieDataSource.getReviews(movieId);
     }
 }

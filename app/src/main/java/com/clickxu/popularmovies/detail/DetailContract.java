@@ -15,6 +15,7 @@ public interface DetailContract {
     interface View {
         void showTrailers(List<Video> trailers);
         void showReviews(List<Review> reviews);
+        void showError(Throwable e);
     }
 
     interface Presenter extends BasePresenter {

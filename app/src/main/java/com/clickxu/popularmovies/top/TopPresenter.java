@@ -3,10 +3,10 @@ package com.clickxu.popularmovies.top;
 import com.clickxu.popularmovies.data.MoviesResult;
 import com.clickxu.popularmovies.data.MovieRepository;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.clickxu.popularmovies.top.ContentType.POP_MOViES;
 import static com.clickxu.popularmovies.top.ContentType.TOP_RATED_MOViES;
@@ -23,7 +23,7 @@ class TopPresenter implements TopContract.Presenter {
     private int mPage;
     private int mTotalPages;
 
-    private CompositeSubscription mSubscriptions;
+    private CompositeDisposable mDisposables;
     private boolean mLoading;
 
     TopPresenter(TopContract.View view, MovieRepository movieRepository,
@@ -33,7 +33,7 @@ class TopPresenter implements TopContract.Presenter {
         mContentType = contentType;
         mPage = page;
         mTotalPages = totalPages;
-        mSubscriptions = new CompositeSubscription();
+        mDisposables = new CompositeDisposable();
         mLoading = false;
     }
 
@@ -42,8 +42,8 @@ class TopPresenter implements TopContract.Presenter {
         if (!mLoading) {
             int nextPage = mPage + 1;
             if (nextPage <= mTotalPages) {
-                mSubscriptions.clear();
-                Subscription s = null;
+                mDisposables.clear();
+                Disposable s = null;
                 switch (mContentType) {
                     case POP_MOViES:
                         s = mMovieRepository.getPopularMovies(nextPage)
@@ -58,7 +58,7 @@ class TopPresenter implements TopContract.Presenter {
                                 .subscribe(this::onSuccess, this::onFailure);
                         break;
                 }
-                if (s != null) mSubscriptions.add(s);
+                if (s != null) mDisposables.add(s);
             }
         }
         mLoading = true;
@@ -122,6 +122,6 @@ class TopPresenter implements TopContract.Presenter {
 
     @Override
     public void unsubscribe() {
-        mSubscriptions.clear();
+        mDisposables.clear();
     }
 }

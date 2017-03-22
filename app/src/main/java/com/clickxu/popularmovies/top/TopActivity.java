@@ -65,7 +65,7 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
             page = savedInstanceState.getInt(PAGE, 1);
             totalPage = savedInstanceState.getInt(TOTAL_PAGE, Integer.MAX_VALUE);
         }
-        mPresenter = new TopPresenter(this, Injection.provideMovieRepository(),
+        mPresenter = new TopPresenter(this, Injection.provideMovieRepository(getContentResolver()),
                 contentType, page, totalPage);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

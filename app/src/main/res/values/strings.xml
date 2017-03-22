@@ -6,7 +6,7 @@
     <string name="rating_suffix">/10</string>
     <string name="title_trailers">Trailers:</string>
     <string name="mark_as_favorite">MARK AS\nFAVORITE</string>
-    <string name="remove_from_favorite">REMOVE FROM\FAVORITE</string>
+    <string name="remove_from_favorite">REMOVE FROM\nFAVORITE</string>
     <string name="show_reviews">Show Reviews</string>
 
     <string name="offline">No network available.</string>

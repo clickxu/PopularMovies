@@ -8,10 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.clickxu.popularmovies.BuildConfig.IMAGE_URL;
 
@@ -47,6 +50,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     @BindView(R.id.rating) TextView mRating;
     @BindView(R.id.description) TextView mDescription;
     @BindView(R.id.trailers) LinearLayout mTrailers;
+    @BindView(R.id.favorite) Button mFavorite;
 
     Movie mMovie;
     DetailContract.Presenter mPresenter;
@@ -84,7 +88,8 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.error)
                 .into(mThumbnail);
-       mPresenter = new DetailPresenter(this, Injection.provideMovieRepository(), mMovie);
+       mPresenter = new DetailPresenter(mMovie,
+               Injection.provideMovieRepository(getContentResolver()), this);
     }
 
     @Override
@@ -139,6 +144,23 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @Override
     public void showError(Throwable e) {
+        Log.e("showError", e.getMessage(), e);
         Toast.makeText(this, R.string.load_error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFavoriteChanged(boolean isFavorite) {
+        if (isFavorite) {
+            mFavorite.setText(R.string.remove_from_favorite);
+        } else {
+            mFavorite.setText(R.string.mark_as_favorite);
+        }
+        mFavorite.setEnabled(true);
+    }
+
+    @OnClick(R.id.favorite)
+    public void onClickFavorite(Button button) {
+        button.setEnabled(false);
+        mPresenter.changeFavorite();
     }
 }

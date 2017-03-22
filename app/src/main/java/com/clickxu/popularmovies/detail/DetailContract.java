@@ -16,9 +16,10 @@ public interface DetailContract {
         void showTrailers(List<Video> trailers);
         void showReviews(List<Review> reviews);
         void showError(Throwable e);
+        void onFavoriteChanged(boolean isFavorite);
     }
 
     interface Presenter extends BasePresenter {
-
+        void changeFavorite();
     }
 }

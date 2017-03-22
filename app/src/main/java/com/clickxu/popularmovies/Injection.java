@@ -1,5 +1,7 @@
 package com.clickxu.popularmovies;
 
+import android.content.ContentResolver;
+
 import com.clickxu.popularmovies.data.MovieRepository;
 
 /**
@@ -8,7 +10,7 @@ import com.clickxu.popularmovies.data.MovieRepository;
 
 public class Injection {
 
-    public static MovieRepository provideMovieRepository() {
-        return MovieRepository.getInstance();
+    public static MovieRepository provideMovieRepository(ContentResolver contentResolver) {
+        return MovieRepository.getInstance(contentResolver);
     }
 }

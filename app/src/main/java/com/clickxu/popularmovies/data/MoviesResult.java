@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesResult implements Parcelable {
@@ -88,4 +89,12 @@ public class MoviesResult implements Parcelable {
         return  0;
     }
 
+    public static MoviesResult empty() {
+        MoviesResult result = new MoviesResult();
+        result.page = 0;
+        result.totalPages = 0;
+        result.totalResults = 0;
+        result.movies = new ArrayList<>();
+        return result;
+    }
 }

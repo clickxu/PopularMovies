@@ -2,6 +2,7 @@ package com.clickxu.popularmovies.data;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -22,7 +23,6 @@ public class MovieContract {
 
         public static final String POSTER_PATH = "poster_path";
         public static final String OVERVIEW = "overview";
-        public static final String ID = "id";
         public static final String RELEASE_DATE = "release_date";
         public static final String TITLE = "title";
         public static final String VOTE_AVERAGE = "vote_average";
@@ -40,12 +40,23 @@ public class MovieContract {
             ContentValues values = new ContentValues();
             values.put(POSTER_PATH, movie.getPosterPath());
             values.put(OVERVIEW, movie.getOverview());
-            values.put(ID, movie.getId());
+            values.put(_ID, movie.getId());
             values.put(RELEASE_DATE, movie.getReleaseDate());
             values.put(TITLE, movie.getTitle());
             values.put(VOTE_AVERAGE, movie.getVoteAverage());
             return values;
         }
 
+
+        public static Movie buildMovieFrom(Cursor cursor) {
+            Movie movie = new Movie();
+            movie.setPosterPath(cursor.getString(cursor.getColumnIndexOrThrow(POSTER_PATH)));
+            movie.setOverview(cursor.getString(cursor.getColumnIndexOrThrow(OVERVIEW)));
+            movie.setId(cursor.getInt(cursor.getColumnIndexOrThrow(_ID)));
+            movie.setReleaseDate(cursor.getString(cursor.getColumnIndexOrThrow(RELEASE_DATE)));
+            movie.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
+            movie.setVoteAverage(cursor.getDouble(cursor.getColumnIndexOrThrow(VOTE_AVERAGE)));
+            return movie;
+        }
     }
 }

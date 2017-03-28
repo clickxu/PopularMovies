@@ -5,11 +5,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -74,6 +72,23 @@ public class MovieRepository implements MovieDataSource {
         return mMovieDataSource.getReviews(movieId);
     }
 
+    public Single<MoviesResult> getFavoriteMovies() {
+        Cursor cursor = mContentResolver.query(
+                MovieContract.FavoriteEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        if (cursor != null) {
+            MoviesResult result = new MoviesResult();
+            result.setTotalResults(cursor.getCount());
+
+            cursor.close();
+
+        }
+        return Single.just(MoviesResult.empty());
+    }
+
     public Single<Boolean> isFavorite(Movie movie) {
         return Single.defer(() -> Single.just(checkIsFavorite(movie)));
     }
@@ -82,7 +97,7 @@ public class MovieRepository implements MovieDataSource {
         Cursor cursor = mContentResolver.query(
                 MovieContract.FavoriteEntry.CONTENT_URI,
                 null,
-                MovieContract.FavoriteEntry.ID + " = ?",
+                MovieContract.FavoriteEntry._ID + " = ?",
                 new String[]{Integer.toString(movie.getId())},
                 null);
         boolean isFavorite = false;
@@ -106,7 +121,7 @@ public class MovieRepository implements MovieDataSource {
         } else {
             mContentResolver.delete(
                     MovieContract.FavoriteEntry.CONTENT_URI,
-                    MovieContract.FavoriteEntry.ID + " = ?",
+                    MovieContract.FavoriteEntry._ID + " = ?",
                     new String[]{"" + movie.getId()}
             );
             return false;

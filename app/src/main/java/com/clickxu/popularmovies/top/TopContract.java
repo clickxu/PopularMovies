@@ -1,5 +1,7 @@
 package com.clickxu.popularmovies.top;
 
+import android.database.Cursor;
+
 import com.clickxu.popularmovies.BasePresenter;
 import com.clickxu.popularmovies.data.Movie;
 
@@ -13,6 +15,7 @@ public interface TopContract {
 
     interface View {
         void showContents(List<Movie> movies);
+        void showContents(Cursor movies);
         void clearContents();
         void showLoadError(Throwable t);
     }

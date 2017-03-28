@@ -1,5 +1,13 @@
 package com.clickxu.popularmovies.top;
 
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+
+import com.clickxu.popularmovies.data.LoaderProvider;
 import com.clickxu.popularmovies.data.MoviesResult;
 import com.clickxu.popularmovies.data.MovieRepository;
 
@@ -8,16 +16,26 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.clickxu.popularmovies.top.ContentType.FAVORITE_MOViES;
 import static com.clickxu.popularmovies.top.ContentType.POP_MOViES;
 import static com.clickxu.popularmovies.top.ContentType.TOP_RATED_MOViES;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by t-xu on 2/14/17.
  */
-class TopPresenter implements TopContract.Presenter {
+class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int CURSOR_LOADER_ID = 0;
 
     private TopContract.View mView;
+    @NonNull
     private MovieRepository mMovieRepository;
+    @NonNull
+    private final LoaderManager mLoaderManager;
+    @NonNull
+    private final LoaderProvider mLoaderProvider;
+
     @ContentType
     private int mContentType;
     private int mPage;
@@ -27,9 +45,12 @@ class TopPresenter implements TopContract.Presenter {
     private boolean mLoading;
 
     TopPresenter(TopContract.View view, MovieRepository movieRepository,
+                 LoaderProvider loaderProvider, LoaderManager loaderManager,
                  @ContentType int contentType, int page, int totalPages) {
-        mView = view;
-        mMovieRepository = movieRepository;
+        mView = checkNotNull(view, "TopContract.View cannot be null");
+        mMovieRepository = checkNotNull(movieRepository, "MovieRepository cannot be null");
+        mLoaderProvider = checkNotNull(loaderProvider, "LoaderProvider cannot be null");
+        mLoaderManager = checkNotNull(loaderManager, "LoaderManager cannot be null");
         mContentType = contentType;
         mPage = page;
         mTotalPages = totalPages;
@@ -57,6 +78,9 @@ class TopPresenter implements TopContract.Presenter {
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(this::onSuccess, this::onFailure);
                         break;
+                    case FAVORITE_MOViES:
+                        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
+                        break;
                 }
                 if (s != null) mDisposables.add(s);
             }
@@ -74,6 +98,8 @@ class TopPresenter implements TopContract.Presenter {
 
     @Override
     public void onContentTypeSelected(@ContentType int selectedType) {
+        mDisposables.clear();
+        mLoading = false;
         if (selectedType != mContentType) {
             mContentType = selectedType;
             refresh();
@@ -123,5 +149,23 @@ class TopPresenter implements TopContract.Presenter {
     @Override
     public void unsubscribe() {
         mDisposables.clear();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mLoading = false;
+        return mLoaderProvider.createFavoriteMoviesLoader();
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mLoading = false;
+        mView.showContents(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mLoading = false;
+        mView.clearContents();
     }
 }

@@ -12,11 +12,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import static android.provider.BaseColumns._ID;
 import static com.clickxu.popularmovies.data.MovieContract.AUTHORITY;
 import static com.clickxu.popularmovies.data.MovieContract.FavoriteEntry.CONTENT_DIR_TYPE;
 import static com.clickxu.popularmovies.data.MovieContract.FavoriteEntry.CONTENT_ITEM_TYPE;
 import static com.clickxu.popularmovies.data.MovieContract.FavoriteEntry.CONTENT_URI;
-import static com.clickxu.popularmovies.data.MovieContract.FavoriteEntry.ID;
 import static com.clickxu.popularmovies.data.MovieContract.FavoriteEntry.TABLE_NAME;
 
 /**
@@ -71,7 +71,7 @@ public class MovieProvider extends ContentProvider {
                 retCursor = db.query(
                         TABLE_NAME,
                         projection,
-                        ID + " = ?",
+                        _ID + " = ?",
                         where,
                         null,
                         null,
@@ -140,7 +140,7 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_WITH_ID:
                 String[] where = {uri.getLastPathSegment()};
                 rowsDeleted = db.delete(TABLE_NAME,
-                        ID + " = ?",
+                        _ID + " = ?",
                         where);
                 break;
             default:

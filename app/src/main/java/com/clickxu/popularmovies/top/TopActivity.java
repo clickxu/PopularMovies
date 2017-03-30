@@ -87,7 +87,6 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
             actionBar.setTitle(R.string.title_pop);
         }
         toolbar.setOnMenuItemClickListener(item -> {
-            mSwipeRefreshLayout.setRefreshing(false);
             switch (item.getItemId()) {
                 case R.id.pop:
                     mPresenter.onContentTypeSelected(POP_MOViES);
@@ -105,7 +104,6 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
         mLayoutManager = new GridLayoutManager(this, calculateNoOfColumns(this, 180));
         mContentsView.setLayoutManager(mLayoutManager);
         mContentsAdapter = new MoviesAdapter(movies);
-        mContentsView.setAdapter(mContentsAdapter);
         mContentsView.addOnScrollListener(new OnScrollListener() {
 
             final int visibleThreshold = 5;
@@ -136,18 +134,27 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mContentsAdapter.getItemCount() == 0) {
+        if (mPresenter.getContentType() == FAVORITE_MOViES) {
             mPresenter.subscribe();
+        } else {
+            if (mContentsAdapter != mContentsView.getAdapter()) {
+                mContentsView.setAdapter(mContentsAdapter);
+            }
+            if (mContentsAdapter.getItemCount() == 0) {
+                mPresenter.subscribe();
+            }
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(MOVIES, mContentsAdapter.getMovies());
         outState.putInt(CONTENT_TYPE, mPresenter.getContentType());
         outState.putInt(PAGE, mPresenter.getPage());
         outState.putInt(TOTAL_PAGE, mPresenter.getTotalPages());
+        if (mPresenter.getContentType() != FAVORITE_MOViES) {
+            outState.putParcelableArrayList(MOVIES, mContentsAdapter.getMovies());
+        }
     }
 
     @Override
@@ -156,18 +163,18 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
             mContentsView.setAdapter(mContentsAdapter);
         }
         mContentsAdapter.append(movies);
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showContents(Cursor movies) {
-        mSwipeRefreshLayout.setRefreshing(false);
         if (mMoviesCursorAdapter == null) {
             mMoviesCursorAdapter = new MoviesCursorAdapter(this, movies);
         } else {
             mMoviesCursorAdapter.swapCursor(movies);
         }
-        mContentsView.setAdapter(mMoviesCursorAdapter);
+        if (mMoviesCursorAdapter != mContentsView.getAdapter()) {
+            mContentsView.setAdapter(mMoviesCursorAdapter);
+        }
     }
 
     @Override
@@ -177,8 +184,12 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
 
     @Override
     public void showLoadError(Throwable t) {
-        mSwipeRefreshLayout.setRefreshing(false);
         Toast.makeText(this, R.string.load_error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void dismissLoading() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

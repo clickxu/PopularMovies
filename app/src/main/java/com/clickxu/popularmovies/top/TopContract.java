@@ -18,6 +18,7 @@ public interface TopContract {
         void showContents(Cursor movies);
         void clearContents();
         void showLoadError(Throwable t);
+        void dismissLoading();
     }
 
     interface Presenter extends BasePresenter {

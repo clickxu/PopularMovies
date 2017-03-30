@@ -10,6 +10,7 @@ import android.support.v4.content.Loader;
 import com.clickxu.popularmovies.data.LoaderProvider;
 import com.clickxu.popularmovies.data.MoviesResult;
 import com.clickxu.popularmovies.data.MovieRepository;
+import com.google.gson.Gson;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -59,51 +60,73 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
     }
 
     @Override
+    public void subscribe() {
+        if (mContentType == FAVORITE_MOViES) {
+            loadFavorites();
+        } else {
+            loadNext();
+        }
+    }
+
+    @Override
     public void loadNext() {
         if (!mLoading) {
             int nextPage = mPage + 1;
             if (nextPage <= mTotalPages) {
                 mDisposables.clear();
-                Disposable s = null;
+                Disposable s;
                 switch (mContentType) {
                     case POP_MOViES:
                         s = mMovieRepository.getPopularMovies(nextPage)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(this::onSuccess, this::onFailure);
+                        mLoading = true;
+                        mDisposables.add(s);
                         break;
                     case TOP_RATED_MOViES:
                         s = mMovieRepository.getTopRatedMovies(nextPage)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(this::onSuccess, this::onFailure);
+                        mLoading = true;
+                        mDisposables.add(s);
                         break;
                     case FAVORITE_MOViES:
-                        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
                         break;
                 }
-                if (s != null) mDisposables.add(s);
             }
         }
-        mLoading = true;
     }
 
     @Override
     public void refresh() {
-        mView.clearContents();
-        mPage = 0;
-        mTotalPages = Integer.MAX_VALUE;
-        loadNext();
+        if (mContentType == FAVORITE_MOViES) {
+            dismissLoading();
+        } else {
+            mView.clearContents();
+            mPage = 0;
+            mTotalPages = Integer.MAX_VALUE;
+            loadNext();
+        }
     }
 
     @Override
     public void onContentTypeSelected(@ContentType int selectedType) {
+        dismissLoading();
         mDisposables.clear();
-        mLoading = false;
         if (selectedType != mContentType) {
             mContentType = selectedType;
-            refresh();
+            if (mContentType == FAVORITE_MOViES) {
+                loadFavorites();
+            } else {
+                refresh();
+            }
         }
+    }
+
+    private void loadFavorites() {
+        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -127,7 +150,7 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
     }
 
     private void onSuccess(MoviesResult result) {
-        mLoading = false;
+        dismissLoading();
         mTotalPages = result.getTotalPages();
         int page = result.getPage();
         if (mPage + 1 == page) {
@@ -137,13 +160,8 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
     }
 
     private void onFailure(Throwable e) {
-        mLoading = false;
+        dismissLoading();
         mView.showLoadError(e);
-    }
-
-    @Override
-    public void subscribe() {
-        loadNext();
     }
 
     @Override
@@ -153,19 +171,21 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mLoading = false;
         return mLoaderProvider.createFavoriteMoviesLoader();
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mLoading = false;
         mView.showContents(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mLoading = false;
         mView.clearContents();
+    }
+
+    private void dismissLoading() {
+        mLoading = false;
+        mView.dismissLoading();
     }
 }

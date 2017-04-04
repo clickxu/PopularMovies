@@ -80,25 +80,33 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setTitle(R.string.title_pop);
         }
         toolbar.setOnMenuItemClickListener(item -> {
+            int stringRes = R.string.title_pop;
             switch (item.getItemId()) {
                 case R.id.pop:
                     mPresenter.onContentTypeSelected(POP_MOViES);
-                    return true;
+                    break;
                 case R.id.top_rated:
+                    stringRes = R.string.title_rate;
                     mPresenter.onContentTypeSelected(TOP_RATED_MOViES);
-                    return true;
+                    break;
                 case R.id.favorite:
+                    stringRes = R.string.title_favorite;
                     mPresenter.onContentTypeSelected(FAVORITE_MOViES);
-                    return true;
+                    break;
+                default:
+                    return false;
             }
-            return false;
+            if (actionBar != null) {
+                actionBar.setTitle(stringRes);
+            }
+            return true;
         });
 
         mLayoutManager = new GridLayoutManager(this, calculateNoOfColumns(this, 180));

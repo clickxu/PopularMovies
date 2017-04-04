@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +23,8 @@ import android.widget.Toast;
 import com.clickxu.popularmovies.Injection;
 import com.clickxu.popularmovies.R;
 import com.clickxu.popularmovies.data.Movie;
-import com.clickxu.popularmovies.data.Review;
 import com.clickxu.popularmovies.data.Video;
+import com.clickxu.popularmovies.review.ReviewsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -41,6 +42,7 @@ import static com.clickxu.popularmovies.BuildConfig.IMAGE_URL;
 public class DetailActivity extends AppCompatActivity implements DetailContract.View {
 
     private static final String MOVIE_DETAIL = "DetailActivity.MovieDetail";
+    private static final String LINK_SUFFIX = "https://www.youtube.com/watch?v=";
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.title) TextView mTitle;
@@ -54,11 +56,9 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     Movie mMovie;
     DetailContract.Presenter mPresenter;
+    String mShareUrl = "";
 
-    public static void launch(Context from, Movie movie) {
-        if (movie == null) {
-            return;
-        }
+    public static void launch(@NonNull Context from, @NonNull Movie movie) {
         Intent i = new Intent();
         i.setClass(from, DetailActivity.class);
         i.putExtra(MOVIE_DETAIL, movie);
@@ -83,12 +83,28 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         mReleaseYear.setText(mMovie.getReleaseDate());
         mRating.setText("" + mMovie.getVoteAverage());
         mDescription.setText(mMovie.getOverview());
+        mToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.reviews:
+                    ReviewsActivity.launch(this, mMovie);
+                    return true;
+                case R.id.share:
+                    String subject = getString(R.string.share);
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_SUBJECT, mMovie.getTitle());
+                    i.putExtra(Intent.EXTRA_TEXT, mShareUrl);
+                    startActivity(Intent.createChooser(i, subject));
+                    return true;
+            }
+            return false;
+        });
         Picasso.with(this)
                 .load(IMAGE_URL + mMovie.getPosterPath())
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.error)
                 .into(mThumbnail);
-       mPresenter = new DetailPresenter(mMovie,
+        mPresenter = new DetailPresenter(mMovie,
                Injection.provideMovieRepository(getContentResolver()), this);
     }
 
@@ -123,23 +139,21 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     public void showTrailers(List<Video> trailers) {
         mTrailers.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
+        if (trailers.size() > 0) {
+            mShareUrl = LINK_SUFFIX + trailers.get(0).getKey();
+        }
         for (Video video : trailers) {
             View row = inflater.inflate(R.layout.row_trailer, mTrailers, false);
             TextView tv = (TextView) row.findViewById(R.id.trailer_title);
             tv.setText(video.getName());
             row.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://www.youtube.com/watch?v=" + video.getKey()));
+                        Uri.parse(LINK_SUFFIX + video.getKey()));
                 startActivity(intent);
             });
             mTrailers.addView(row);
             View.inflate(this, R.layout.trailer_divider, mTrailers);
         }
-    }
-
-    @Override
-    public void showReviews(List<Review> reviews) {
-        //TODO
     }
 
     @Override

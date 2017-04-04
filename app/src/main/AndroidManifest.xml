@@ -20,7 +20,8 @@
         </activity>
 
         <activity android:name=".detail.DetailActivity" />
-        
+        <activity android:name=".review.ReviewsActivity" />
+
         <provider android:authorities="com.clickxu.popularmovies"
                   android:name=".data.MovieProvider"
                   android:exported="false"/>

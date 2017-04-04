@@ -15,8 +15,8 @@
 			android:layout_height="wrap_content"
 			android:background="?attr/colorPrimary"
 			android:minHeight="?attr/actionBarSize"
-		    app:theme="@style/ToolbarColoredIcon"
-			/>
+			app:theme="@style/ToolbarColoredIcon"
+		/>
 	</android.support.design.widget.AppBarLayout>
 	<TextView
 		android:layout_width="match_parent"
@@ -29,8 +29,8 @@
 		android:padding="32dp"
 		android:gravity="center_vertical|start"
 		android:background="@color/colorAccent"
-	    android:elevation="@dimen/title_elevation"
-		/>
+		android:elevation="@dimen/title_elevation"
+	/>
 
 	<ScrollView
 		android:layout_width="match_parent"
@@ -48,16 +48,17 @@
 				android:layout_height="wrap_content"
 				layout="@layout/movie_info"
 				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
 				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintRight_toLeftOf="@+id/trailerList"
 				/>
 			<include
+				android:id="@+id/trailerList"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-			    layout="@layout/trailer_list"
-				app:layout_constraintLeft_toLeftOf="parent"
+				layout="@layout/trailer_list"
+				app:layout_constraintLeft_toRightOf="@id/movieInfo"
 				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/movieInfo"
+				app:layout_constraintTop_toTopOf="parent"
 				/>
 		</android.support.constraint.ConstraintLayout>
 	</ScrollView>

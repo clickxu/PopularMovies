@@ -9,6 +9,7 @@
     <string name="mark_as_favorite">MARK AS\nFAVORITE</string>
     <string name="remove_from_favorite">REMOVE FROM\nFAVORITE</string>
     <string name="show_reviews">Show Reviews</string>
+    <string name="share">Share</string>
 
     <string name="offline">No network available.</string>
     <string name="load_error">Error occurred when trying to load.</string>

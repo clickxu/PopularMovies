@@ -147,6 +147,12 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.unsubscribe();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CONTENT_TYPE, mPresenter.getContentType());
@@ -252,8 +258,6 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
             mMovies.clear();
             notifyDataSetChanged();
         }
-
-
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

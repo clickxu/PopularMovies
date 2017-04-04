@@ -19,18 +19,15 @@ public class DetailPresenter implements DetailContract.Presenter {
 
     final private Movie mMovie;
     final private MovieRepository mMovieRepository;
-    private LoaderManager mLoaderManager;
-    private DetailContract.View mView;
-    private CompositeDisposable mDisposables;
+    final private DetailContract.View mView;
+    final private CompositeDisposable mDisposables;
     private boolean mIsFavorite = false;
 
     DetailPresenter(@NonNull Movie movie,
-                    //@NonNull LoaderManager loaderManager,
                     @NonNull MovieRepository movieRepository,
                     @NonNull DetailContract.View view) {
         mMovie = movie;
         mMovieRepository = movieRepository;
-        //mLoaderManager = loaderManager;
         mView = view;
         mDisposables = new CompositeDisposable();
     }
@@ -42,27 +39,14 @@ public class DetailPresenter implements DetailContract.Presenter {
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         result -> mView.showTrailers(result.getVideos()),
-                        e -> mView.showError(e)
+                        mView::showError
                 );
         mDisposables.add(vs);
-
-        Disposable rs = mMovieRepository.getReviews(mMovie.getId())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        result -> mView.showReviews(result.getReviews()),
-                        e -> mView.showError(e)
-                );
-        mDisposables.add(rs);
-
         Disposable rf = mMovieRepository.isFavorite(mMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(result -> mIsFavorite = result)
-                .subscribe(
-                        result -> mView.onFavoriteChanged(result),
-                        e -> mView.showError(e)
-                );
+                .subscribe(mView::onFavoriteChanged, mView::showError);
 
         mDisposables.add(rf);
     }
@@ -78,10 +62,7 @@ public class DetailPresenter implements DetailContract.Presenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(result -> mIsFavorite = result)
-                .subscribe(
-                        result -> mView.onFavoriteChanged(result),
-                        e -> mView.showError(e)
-                );
+                .subscribe(mView::onFavoriteChanged, mView::showError);
         mDisposables.add(disposable);
     }
 }

@@ -29,6 +29,7 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
 
     private static final int CURSOR_LOADER_ID = 0;
 
+    @NonNull
     private TopContract.View mView;
     @NonNull
     private MovieRepository mMovieRepository;
@@ -36,7 +37,6 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
     private final LoaderManager mLoaderManager;
     @NonNull
     private final LoaderProvider mLoaderProvider;
-
     @ContentType
     private int mContentType;
     private int mPage;
@@ -45,8 +45,10 @@ class TopPresenter implements TopContract.Presenter, LoaderManager.LoaderCallbac
     private CompositeDisposable mDisposables;
     private boolean mLoading;
 
-    TopPresenter(TopContract.View view, MovieRepository movieRepository,
-                 LoaderProvider loaderProvider, LoaderManager loaderManager,
+    TopPresenter(@NonNull TopContract.View view,
+                 @NonNull MovieRepository movieRepository,
+                 @NonNull LoaderProvider loaderProvider,
+                 @NonNull LoaderManager loaderManager,
                  @ContentType int contentType, int page, int totalPages) {
         mView = checkNotNull(view, "TopContract.View cannot be null");
         mMovieRepository = checkNotNull(movieRepository, "MovieRepository cannot be null");

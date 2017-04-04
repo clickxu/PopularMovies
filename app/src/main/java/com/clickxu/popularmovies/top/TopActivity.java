@@ -26,6 +26,8 @@ import com.clickxu.popularmovies.data.Movie;
 import com.clickxu.popularmovies.data.MovieContract;
 import com.clickxu.popularmovies.detail.DetailActivity;
 import com.clickxu.popularmovies.ui.CursorRecyclerViewAdapter;
+import com.clickxu.popularmovies.utils.TypeUtils;
+import com.google.common.reflect.TypeResolver;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -84,27 +86,24 @@ public class TopActivity extends AppCompatActivity implements TopContract.View {
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setTitle(R.string.title_pop);
+            actionBar.setTitle(TypeUtils.getTitle(contentType));
         }
         toolbar.setOnMenuItemClickListener(item -> {
-            int stringRes = R.string.title_pop;
             switch (item.getItemId()) {
                 case R.id.pop:
                     mPresenter.onContentTypeSelected(POP_MOViES);
                     break;
                 case R.id.top_rated:
-                    stringRes = R.string.title_rate;
                     mPresenter.onContentTypeSelected(TOP_RATED_MOViES);
                     break;
                 case R.id.favorite:
-                    stringRes = R.string.title_favorite;
                     mPresenter.onContentTypeSelected(FAVORITE_MOViES);
                     break;
                 default:
                     return false;
             }
             if (actionBar != null) {
-                actionBar.setTitle(stringRes);
+                actionBar.setTitle(TypeUtils.getTitle(mPresenter.getContentType()));
             }
             return true;
         });

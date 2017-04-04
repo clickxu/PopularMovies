@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -189,6 +191,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewsContrac
             final Review review = mReviews.get(position);
             holder.authorText.setText(review.getAuthor());
             holder.contentText.setText(review.getContent());
+            Linkify.addLinks(holder.contentText, Linkify.WEB_URLS);
         }
 
         @Override

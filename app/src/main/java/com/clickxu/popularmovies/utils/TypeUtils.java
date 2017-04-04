@@ -1,5 +1,6 @@
 package com.clickxu.popularmovies.utils;
 
+import com.clickxu.popularmovies.R;
 import com.clickxu.popularmovies.top.ContentType;
 
 import static com.clickxu.popularmovies.top.ContentType.FAVORITE_MOViES;
@@ -21,5 +22,18 @@ public class TypeUtils {
             throw new IllegalArgumentException("Unknown ContentType: " + i);
         }
         return i;
+    }
+
+    public static int getTitle(@ContentType int contentType) {
+        switch (contentType) {
+            case POP_MOViES:
+                return R.string.title_pop;
+            case TOP_RATED_MOViES:
+                return R.string.title_rate;
+            case FAVORITE_MOViES:
+                return R.string.title_favorite;
+            default:
+                throw new IllegalArgumentException("Unknown ContentType: " + contentType);
+        }
     }
 }

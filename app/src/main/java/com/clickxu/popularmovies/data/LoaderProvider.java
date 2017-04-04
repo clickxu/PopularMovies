@@ -24,6 +24,6 @@ public class LoaderProvider {
     public Loader<Cursor> createFavoriteMoviesLoader() {
         return new CursorLoader(mContext,
                 MovieContract.FavoriteEntry.CONTENT_URI,
-                null, null, null, null);
+                null, null, null, MovieContract.FavoriteEntry._ID + " ASC");
     }
 }

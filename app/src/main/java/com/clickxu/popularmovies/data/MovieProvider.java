@@ -164,7 +164,7 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 tasksUpdated = mMovieDbHelper.getWritableDatabase()
-                        .update(TABLE_NAME, values, "_id=?", new String[]{id});
+                        .update(TABLE_NAME, values, _ID + "=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
